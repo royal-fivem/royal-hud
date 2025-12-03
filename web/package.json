@@ -1,0 +1,29 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"build:watch": "vite build --watch",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@hugeicons/core-free-icons": "^2.0.0",
+		"@hugeicons/react": "^1.1.1",
+		"framer-motion": "^12.23.25",
+		"preact": "^10.25.3",
+		"zustand": "^5.0.2"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "^2.9.3",
+		"autoprefixer": "^10.4.20",
+		"eslint": "^8.57.1",
+		"eslint-config-preact": "^1.5.0",
+		"postcss": "^8.4.49",
+		"tailwindcss": "^3.4.17",
+		"vite": "^6.0.4"
+	},
+	"eslintConfig": {
+		"extends": "preact"
+	}
+}

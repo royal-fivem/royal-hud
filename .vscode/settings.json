@@ -1,0 +1,12 @@
+{
+    "Lua.diagnostics.disable": [
+        "missing-parameter"
+    ],
+    "Lua.diagnostics.globals": [
+        "requestStreamedTextureDict",
+        "loadMinimap",
+        "dprint",
+        "round",
+        "bridge"
+    ],
+}
