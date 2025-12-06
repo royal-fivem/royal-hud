@@ -89,10 +89,6 @@ Royal Community HUD works seamlessly across all major FiveM frameworks with our 
 - **Vehicle status bars** — Fuel, Engine Health, Seatbelt
 - Only appears when in a vehicle
 
-### ⚙️ In-Game Settings Panel
-
-![Document|141x499, 100%](upload://lqP8ULUNiIePNrHLludgNU1FFz0.png)
-
 Full customization without touching config files:
 
 | Category | Options |
