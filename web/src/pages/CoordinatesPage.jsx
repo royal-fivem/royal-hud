@@ -4,13 +4,19 @@ import useStore from '../state/store'
 const CoordinatesPage = () => {
     const { hudSettings, setHudSettings } = useStore();
 
-    // Helper to get current value with default true
-    const getValue = (key) => hudSettings[key] !== false;
+    const showCompass = hudSettings?.compass?.showCompass ?? true;
+    const showAngles = hudSettings?.compass?.showAngles ?? true;
+    const showStreetName = hudSettings?.compass?.showStreetName ?? true;
+    const showAreaName = hudSettings?.compass?.showAreaName ?? true;    
 
-    // Helper to toggle - if undefined or true, set to false; if false, set to true
-    const toggle = (key) => {
-        const currentValue = hudSettings[key] !== false;
-        setHudSettings(prev => ({ ...prev, [key]: !currentValue }));
+    const UpdateSettingings = (key, value) => {
+        setHudSettings({
+            ...hudSettings,
+            compass: {
+                ...hudSettings.compass,
+                [key]: value
+            }
+        });
     };
 
     return (
@@ -24,14 +30,14 @@ const CoordinatesPage = () => {
                     <p className="text-white/40 text-xs mt-0.5">Display compass at top of screen</p>
                 </div>
                 <button
-                    onClick={() => toggle('showCompass')}
+                    onClick={() => UpdateSettingings('showCompass', !showCompass)}
                     className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                        getValue('showCompass') ? 'bg-indigo-500' : 'bg-white/20'
+                        showCompass ? 'bg-indigo-500' : 'bg-white/20'
                     }`}
                 >
                     <motion.div 
                         className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md"
-                        animate={{ x: getValue('showCompass') ? 24 : 4 }}
+                        animate={{ x: showCompass ? 24 : 4 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
                     />
                 </button>
@@ -44,14 +50,14 @@ const CoordinatesPage = () => {
                     <p className="text-white/40 text-xs mt-0.5">Display degree numbers on compass</p>
                 </div>
                 <button
-                    onClick={() => toggle('showAngles')}
+                    onClick={() => UpdateSettingings('showAngles', !showAngles)}
                     className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                        getValue('showAngles') ? 'bg-indigo-500' : 'bg-white/20'
+                        showAngles ? 'bg-indigo-500' : 'bg-white/20'
                     }`}
                 >
                     <motion.div 
                         className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md"
-                        animate={{ x: getValue('showAngles') ? 24 : 4 }}
+                        animate={{ x: showAngles ? 24 : 4 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
                     />
                 </button>
@@ -64,14 +70,14 @@ const CoordinatesPage = () => {
                     <p className="text-white/40 text-xs mt-0.5">Display current street below compass</p>
                 </div>
                 <button
-                    onClick={() => toggle('showStreetName')}
+                    onClick={() => UpdateSettingings('showStreetName', !showStreetName)}
                     className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                        getValue('showStreetName') ? 'bg-indigo-500' : 'bg-white/20'
+                        showStreetName ? 'bg-indigo-500' : 'bg-white/20'
                     }`}
                 >
                     <motion.div 
                         className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md"
-                        animate={{ x: getValue('showStreetName') ? 24 : 4 }}
+                        animate={{ x: showStreetName ? 24 : 4 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
                     />
                 </button>
@@ -84,14 +90,14 @@ const CoordinatesPage = () => {
                     <p className="text-white/40 text-xs mt-0.5">Display area/district name below street</p>
                 </div>
                 <button
-                    onClick={() => toggle('showAreaName')}
+                    onClick={() => UpdateSettingings('showAreaName', !showAreaName)}
                     className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                        getValue('showAreaName') ? 'bg-indigo-500' : 'bg-white/20'
+                        showAreaName ? 'bg-indigo-500' : 'bg-white/20'
                     }`}
                 >
                     <motion.div 
                         className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md"
-                        animate={{ x: getValue('showAreaName') ? 24 : 4 }}
+                        animate={{ x: showAreaName ? 24 : 4 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
                     />
                 </button>

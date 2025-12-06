@@ -7,6 +7,7 @@
         "loadMinimap",
         "dprint",
         "round",
-        "bridge"
+        "bridge",
+        "getNitroLevel"
     ],
 }

@@ -1,19 +1,27 @@
 local dev = false
 local nuiReady = false
+local seatbelt = false
 
 RegisterNetEvent('royal-hud:toggleDevmode', function()
     dev = not dev
 end)
 
+RegisterNetEvent('royal-hud:toggleSeatbelt', function()
+    seatbelt = not seatbelt
+end)
+
 Citizen.CreateThread(function ()
     DisplayRadar(false)
-    while not bridge.isPlayerLoaded() do
+    while nuiReady == false do
+        Wait(100)
+    end
+    while bridge.isPlayerLoaded() == false do
         Wait(100)
     end
     DisplayRadar(true)
     local settings = json.decode(GetResourceKvpString(Config.SaveName))
 
-    if settings == nil or settings == {} then
+    if settings == nil or settings == '' then
         dprint('No saved settings found, loading defaults.')
         SendNUIMessage({
             type = 'fetchDefaultSettings',
@@ -28,7 +36,7 @@ Citizen.CreateThread(function ()
             }
         })
     end
-    
+
     Wait(1000)
     playerLoaded()
     loadMinimap()
@@ -67,39 +75,75 @@ RegisterNUICallback('close', function(_, cb)
 end)
 
 RegisterNUICallback('hud-ready', function ()
+    dprint('NUI is ready')
     nuiReady = true
 end)
 
 Citizen.CreateThread(function ()
     while true do
-        if bridge.isPlayerLoaded() then
+        if bridge.isPlayerLoaded() and nuiReady then
             local ped = PlayerPedId()
             local playerCoords = GetEntityCoords(ped)
             local camRot = GetGameplayCamRot(0)
             local streetName = GetStreetNameFromHashKey(GetStreetNameAtCoord(playerCoords.x, playerCoords.y, playerCoords.z))
             local zoneName = GetLabelText(GetNameOfZone(playerCoords.x, playerCoords.y, playerCoords.z))
             local hunger, thirst = bridge.getPlayerStatus()
+            local veh = GetVehiclePedIsIn(ped, false)
+            local inVeh = veh ~= 0
 
-            SendNUIMessage({
-                type = 'updateStatusValues',
-                data = {
-                    statusValues = {
-                        health = GetEntityHealth(ped) - 100,
-                        armor = GetPedArmour(ped),
+            if inVeh and inVeh ~= 0 then
+                local rpm = GetVehicleCurrentRpm(veh) * 100
+                local engineHealth = GetVehicleEngineHealth(veh)
 
-                        hunger = hunger,
-                        thirst = thirst,
-                        stress = 0,
-                        energy = GetPlayerStamina(PlayerId()),
-                        dev = dev == true and 100 or 0,
+                SendNUIMessage({
+                    type = 'updateStatusValues',
+                    data = {
+                        statusValues = {
+                            health = GetEntityHealth(ped) - 100,
+                            armor = GetPedArmour(ped),
 
-                        compass = round(360.0 - ((camRot.z + 360.0) % 360.0)),
-                        streetName = streetName,
-                        areaName = zoneName,
+                            hunger = hunger,
+                            thirst = thirst,
+                            stress = 0,
+                            energy = GetPlayerStamina(PlayerId()),
+                            dev = dev == true and 100 or 0,
+
+                            compass = round(360.0 - ((camRot.z + 360.0) % 360.0)),
+                            streetName = streetName,
+                            areaName = zoneName,
+
+                            -- vehicle
+                            inVehicle = inVeh,
+                            speed = math.floor(GetEntitySpeed(veh)),
+                            rpm = rpm,
+                            nitro = getNitroLevel(veh),
+                            seatbelt = seatbelt == true and 100 or 0,
+                            fuel = getFuel(veh),
+                            engine = engineHealth,
+                        }
                     }
-                }
-            })
+                })
+            else
+                SendNUIMessage({
+                    type = 'updateStatusValues',
+                    data = {
+                        statusValues = {
+                            health = GetEntityHealth(ped) - 100,
+                            armor = GetPedArmour(ped),
 
+                            hunger = hunger,
+                            thirst = thirst,
+                            stress = 0,
+                            energy = GetPlayerStamina(PlayerId()),
+                            dev = dev == true and 100 or 0,
+
+                            compass = round(360.0 - ((camRot.z + 360.0) % 360.0)),
+                            streetName = streetName,
+                            areaName = zoneName,
+                        }
+                    }
+                })
+            end
         end
         Citizen.Wait(Config.TickRate)
     end
@@ -117,4 +161,16 @@ if Config.Debug == true then
         local armor = tonumber(args[1])
         SetPedArmour(ped, armor)
     end)
+
+    RegisterCommand('seatbelt', function ()
+        TriggerEvent('royal-hud:toggleSeatbelt')
+    end)
+
+    RegisterCommand('devmode', function ()
+        TriggerEvent('royal-hud:toggleDevmode')
+    end)
 end
+
+RegisterCommand('resethudsettings', function ()
+    SetResourceKvp(Config.SaveName, '')
+end)

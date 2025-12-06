@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { motion } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FuelStationIcon, BeltIcon, Car01Icon } from '@hugeicons/core-free-icons'
@@ -5,32 +6,15 @@ import useStore from '../state/store';
 import StatusItem from '../components/StatusItem';
 
 const VehiclePage = () => {
-    const { hudSettings, setHudSettings } = useStore();
+    const { hudSettings, setHudSettings, vehicleStatuses } = useStore();
+    const statuses = hudSettings.vehicleStatuses || defaultVehicleStatuses;
 
-    const vehicleStatuses = [
-        { id: 'fuel', icon: FuelStationIcon, label: 'Fuel' },
-        { id: 'engine', icon: Car01Icon, label: 'Engine' },
-        { id: 'seatbelt', icon: BeltIcon, label: 'Seatbelt' },
-    ];
+    const vehicleEnabled = hudSettings?.vehicle?.enabled ?? true;
+    const showSpeed = hudSettings?.vehicle?.showSpeed ?? true;
+    const showGear = hudSettings?.vehicle?.showGear ?? true;
+    const speedUnit = hudSettings?.vehicle?.speedUnit ?? 'MPH';
 
-    const getStatusConfig = (id) => ({
-        color: '#3b82f6',
-        enabled: true,
-        hideUnder: 0,
-        ...hudSettings.vehicleStatuses?.[id]
-    });
-
-    const updateStatus = (id, config) => {
-        setHudSettings({
-            ...hudSettings,
-            vehicleStatuses: {
-                ...hudSettings.vehicleStatuses,
-                [id]: config
-            }
-        });
-    };
-
-    const updateVehicleSetting = (key, value) => {
+    const UpdateSettingings = (key, value) => {
         setHudSettings({
             ...hudSettings,
             vehicle: {
@@ -39,11 +23,6 @@ const VehiclePage = () => {
             }
         });
     };
-
-    const vehicleEnabled = hudSettings.vehicle?.enabled ?? true;
-    const showSpeed = hudSettings.vehicle?.showSpeed ?? true;
-    const showGear = hudSettings.vehicle?.showGear ?? true;
-    const speedUnit = hudSettings.vehicle?.speedUnit ?? 'MPH';
 
     return (
         <div className="space-y-6">
@@ -62,7 +41,7 @@ const VehiclePage = () => {
                         </div>
                     </div>
                     <button
-                        onClick={() => updateVehicleSetting('enabled', !vehicleEnabled)}
+                        onClick={() => UpdateSettingings('enabled', !vehicleEnabled)}
                         className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
                             vehicleEnabled ? 'bg-purple-500' : 'bg-white/20'
                         }`}
@@ -90,7 +69,7 @@ const VehiclePage = () => {
                         <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                             <span className="text-white/90 text-sm">Show Speed</span>
                             <button
-                                onClick={() => updateVehicleSetting('showSpeed', !showSpeed)}
+                                onClick={() => UpdateSettingings('showSpeed', !showSpeed)}
                                 className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
                                     showSpeed ? 'bg-indigo-500' : 'bg-white/20'
                                 }`}
@@ -107,7 +86,7 @@ const VehiclePage = () => {
                         <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                             <span className="text-white/90 text-sm">Show Gear Indicator</span>
                             <button
-                                onClick={() => updateVehicleSetting('showGear', !showGear)}
+                                onClick={() => UpdateSettingings('showGear', !showGear)}
                                 className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
                                     showGear ? 'bg-indigo-500' : 'bg-white/20'
                                 }`}
@@ -129,7 +108,7 @@ const VehiclePage = () => {
                                 {['MPH', 'KMH'].map((unit) => (
                                     <button
                                         key={unit}
-                                        onClick={() => updateVehicleSetting('speedUnit', unit)}
+                                        onClick={() => UpdateSettingings('speedUnit', unit)}
                                         className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                                             speedUnit === unit
                                                 ? 'bg-indigo-500 text-white'
@@ -151,8 +130,16 @@ const VehiclePage = () => {
                                 key={status.id}
                                 icon={status.icon}
                                 label={status.label}
-                                config={getStatusConfig(status.id)}
-                                onUpdate={(config) => updateStatus(status.id, config)}
+                                config={hudSettings.vehicleStatuses?.[status.id]}
+                                onUpdate={(config) => 
+                                    setHudSettings({
+                                        ...hudSettings,
+                                        vehicleStatuses: {
+                                            ...hudSettings.vehicleStatuses,
+                                            [status.id]: config
+                                        }
+                                    })
+                                }
                             />
                         ))}
                     </div>

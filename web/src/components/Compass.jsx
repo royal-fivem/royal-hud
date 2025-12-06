@@ -1,16 +1,13 @@
-import { useEffect, useState } from 'preact/hooks'
 import useStore from '../state/store';
 
 const Compass = () => {
     const { statusValues, directions, hudSettings } = useStore();
     
-    // Settings with defaults (true if not set)
-    const showCompass = hudSettings?.showCompass !== false;
-    const showAngles = hudSettings?.showAngles !== false;
-    const showStreetName = hudSettings?.showStreetName !== false;
-    const showAreaName = hudSettings?.showAreaName !== false;
+    const showCompass = hudSettings?.compass?.showCompass ?? true;
+    const showAngles = hudSettings?.compass?.showAngles ?? true;
+    const showStreetName = hudSettings?.compass?.showStreetName ?? true;
+    const showAreaName = hudSettings?.compass?.showAreaName ?? true;
 
-    // Don't render if compass is disabled
     if (!showCompass) return null;
 
     const heading = statusValues?.compass ?? 0;
@@ -34,9 +31,7 @@ const Compass = () => {
     return (
         <div className="flex flex-col items-center select-none">
             <div className="relative w-[500px] h-12">
-
                 <div className="absolute inset-x-0 top-0 h-5 flex items-center justify-center">
-                    {/* Cardinal directions */}
                     {directions.map((dir) => {
                         const pos = getPosition(dir.degree);
                         if (Math.abs(pos) > visibleRange) return null;
@@ -57,7 +52,6 @@ const Compass = () => {
                         );
                     })}
 
-                    {/* Angle/Degree numbers - only show if showAngles is true */}
                     {showAngles && [...Array(24)].map((_, i) => {
                         const degree = i * 15;
                         const pos = getPosition(degree);

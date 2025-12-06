@@ -4,6 +4,7 @@ import StatusItem from '../components/StatusItem'
 const StatusesPage = () => {
     const { defaultStatuses, hudSettings, setHudSettings, statusList } = useStore();
     const statuses = hudSettings.statuses || defaultStatuses;
+    const visibleStatuses = statusList.filter((status) => status.showInSettings);
 
     const updateStatus = (id, config) => {
         setHudSettings(prev => ({
@@ -19,7 +20,7 @@ const StatusesPage = () => {
         <div className="space-y-4">
             <h3 className="text-white/40 text-xs font-medium uppercase tracking-wider">Status Configuration</h3>
             
-            {statusList.map((status) => (
+            {visibleStatuses.map((status) => (
                 <StatusItem
                     key={status.id}
                     icon={status.icon}

@@ -1,4 +1,7 @@
 fx_version 'cerulean'
+author 'Royal, community'
+description 'Royal Hud'
+repository 'https://github.com/royal-fivem/royal-hud'
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'
 games {'gta5'}
