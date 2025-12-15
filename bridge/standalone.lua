@@ -1,12 +1,7 @@
 if Config.Framework == 'STANDALONE' then
 
     bridge = {}
-    local playerLoaded = false
-
-    AddEventHandler("PlayerSpawned", function()
-        playerLoaded = true
-        dprint("Player Successfully Loaded")
-    end)
+    local playerLoaded = true
 
     -- there is no hunger or thirst to get
     function bridge.getPlayerStatus()
