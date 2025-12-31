@@ -18,7 +18,7 @@ import './style.css';
 import SendNuiCallback from './utils/sendnuicallback';
 
 export function App() {
-    const { SettingsVisible, setState, statusValues } = useStore()
+    const { SettingsVisible, setState, statusValues, hudVisible } = useStore()
     const isInVehicle = statusValues?.inVehicle ?? false;
 
     useEffect(() => {
@@ -39,32 +39,38 @@ export function App() {
         });
     }
 
+
+
     return (
         <WindowListener>
-            <div 
-                className="z-20 bottom-5 left-5 absolute flex gap-8 items-center"
-                style={{
-                    transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(7deg) rotateZ(-1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
-                }}>
-                <MainHud />
-                <SecondHud />
-            </div>
+            {(hudVisible || isEnvBrowser()) && (
+                <>
+                    <div
+                        className="z-20 bottom-5 left-5 absolute flex gap-8 items-center"
+                        style={{
+                            transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(7deg) rotateZ(-1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
+                        }}>
+                        <MainHud />
+                        <SecondHud />
+                    </div>
 
-            {/* Compass - Top Center */}
-            <div className="z-10 mt-3">
-                <Compass />
-            </div>
+                    {/* Compass - Top Center */}
+                    <div className="z-10 mt-3">
+                        <Compass />
+                    </div>
 
-            {/* Vehicle HUD - Bottom Right */}
-            {isInVehicle && (
-                <div 
-                    className="z-20 bottom-10 right-10 absolute"
-                    style={{
-                        transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(-7deg) rotateZ(1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
-                    }}
-                >
-                    <VehicleHud />
-                </div>
+                    {/* Vehicle HUD - Bottom Right */}
+                    {isInVehicle && (
+                        <div
+                            className="z-20 bottom-10 right-10 absolute"
+                            style={{
+                                transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(-7deg) rotateZ(1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
+                            }}
+                        >
+                            <VehicleHud />
+                        </div>
+                    )}
+                </>
             )}
 
             {/* Settings Button - Browser Only */}

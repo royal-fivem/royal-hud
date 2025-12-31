@@ -1,13 +1,9 @@
 if Config.Framework == 'ESX' then
+    ESX = exports["es_extended"]:getSharedObject()
 
     bridge = {}
     local values = { hunger = 0, thirst = 0 }
-    local playerLoaded = false
-
-    RegisterNetEvent("esx:playerLoaded", function()
-        playerLoaded = true
-        dprint("Player Successfully Loaded")
-    end)
+    local playerLoaded = ESX.PlayerLoaded
 
     AddEventHandler("esx_status:onTick", function(data)
         for i = 1, #data do
