@@ -78,7 +78,7 @@ const DEFAULT_HUD_SETTINGS = {
     vehicle: {
         enabled: true,
         showGear: true,
-        speedUnit: 'MPH',
+        speedUnit: 'KMH',
     },
 
     vehicleStatuses: DEFAULT_VEHICLE_SETTINGS,
@@ -108,6 +108,7 @@ const DEFAULT_STATUS_VALUES = {
 const useStore = create((set, get) => ({
     playerLoaded: false,
     SettingsVisible: false,
+    hudVisible: false,
 
     directions: DIRECTIONS,
     statusList: STATUS_LIST,
@@ -124,6 +125,16 @@ const useStore = create((set, get) => ({
         
         if (payload.type === 'showUI') {
             set({ SettingsVisible: true })
+            return
+        }
+
+        if (payload.type === 'showHud') {
+            set({ hudVisible: true })
+            return
+        }
+
+        if (payload.type === 'hideHud') {
+            set({ hudVisible: false })
             return
         }
 

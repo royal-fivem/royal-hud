@@ -18,7 +18,7 @@ import './style.css';
 import SendNuiCallback from './utils/sendnuicallback';
 
 export function App() {
-    const { SettingsVisible, setState, statusValues, playerLoaded } = useStore()
+    const { SettingsVisible, setState, statusValues, hudVisible } = useStore()
     const isInVehicle = statusValues?.inVehicle ?? false;
 
     useEffect(() => {
@@ -43,12 +43,13 @@ export function App() {
         });
     }
 
+
+
     return (
         <WindowListener>
-            {playerLoaded && (
+            {(hudVisible || isEnvBrowser()) && (
                 <>
-                
-                    <div 
+                    <div
                         className="z-20 bottom-5 left-5 absolute flex gap-8 items-center"
                         style={{
                             transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(7deg) rotateZ(-1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
@@ -64,7 +65,7 @@ export function App() {
 
                     {/* Vehicle HUD - Bottom Right */}
                     {isInVehicle && (
-                        <div 
+                        <div
                             className="z-20 bottom-10 right-10 absolute"
                             style={{
                                 transform: 'scaleX(1) scaleY(1) scaleZ(1) rotateX(0deg) rotateY(-7deg) rotateZ(1deg) translateX(0px) translateY(0px) translateZ(0px) skewX(0deg) skewY(0deg)',
@@ -73,6 +74,8 @@ export function App() {
                             <VehicleHud />
                         </div>
                     )}
+                </>
+            )}
 
                     {/* Settings Button - Browser Only */}
                     {isEnvBrowser() && (
